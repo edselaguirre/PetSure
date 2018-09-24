@@ -1,0 +1,69 @@
+﻿
+@{
+    /**/
+
+    ViewBag.Title = "Home Page";
+}
+
+<div class="container" ng-app="App" ng-controller="Controller as data">
+
+
+
+    <div class="row mb-2">
+        <img src="@Url.Content("~/Content/petsure-logo.png")" width="20%" height="20%" style="display:inline-block;" />
+    </div>
+    <center>
+        <h2>Make a claim</h2>
+    </center>
+    <div class="row justify-content-center mb-3">
+        <div class="col-lg">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">Make a claim for your pet</label>
+                </div>
+                <select id="ddlPetName" class="custom-select" ng-options="value.name for value in data.PetInfoList track by value.id" ng-model="defaulPetInfo"></select>
+
+               
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <form action="~/Home/UploadFiles" class="dropzone mb-3" id="dropzoneJsForm"></form>
+        <button class="btn btn-primary" id="submit-all">Submit All Files</button>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+
+        Dropzone.options.dropzoneJsForm = {           
+            autoProcessQueue: false,
+            parallelUploads: 20,
+            uploadMultiple: true,            
+
+            init: function () {
+                var submitButton = document.querySelector("#submit-all");
+                var myDropzone = this; 
+                var obj = null;
+                myDropzone.on("sending", function (file, xhr, formData) {
+                    formData.append("Value", $("#ddlPetName option:selected").text());
+                });
+                submitButton.addEventListener("click", function (response) {
+                    myDropzone.processQueue(); 
+                });
+                myDropzone.on("success", function (file, response) {
+                    obj = response["Message"];
+                });
+                myDropzone.on("queuecomplete", function (file, response) {
+                    toastr.success(obj, "PetSure", {timeOut:0});
+                });                
+            }
+        };
+
+       
+    </script>
+}
+
+
+
+
